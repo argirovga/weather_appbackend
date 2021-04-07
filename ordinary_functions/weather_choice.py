@@ -1,4 +1,3 @@
-
 def weather_choice_mech(weather):
     dictionary_data = {}
     if weather['temp'] >= 23:
@@ -34,5 +33,7 @@ def weather_choice_mech(weather):
 
     if weather['humidity'] >= 70 or weather['temp'] >= 30:
         dictionary_data['need_umbrella'] = True
+
+    dictionary_data['city_name'] = weather['city_name']
 
     return dictionary_data

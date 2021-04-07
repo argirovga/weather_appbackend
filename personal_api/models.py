@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from datetime import date
+
+
 User = get_user_model()
 
 
@@ -20,6 +22,7 @@ class Weather_data(models.Model):
 
 
 class Clothes_recommendation(models.Model):
+    city_name = models.CharField(max_length=100, default="None")
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     main_description = models.CharField(max_length=600)
     need_umbrella = models.BooleanField()

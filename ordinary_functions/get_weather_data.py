@@ -1,24 +1,60 @@
 import requests
 from datetime import date
+import datetime
+
+from personal_api.serializers import WeatherDataSerializer
+
+from personal_api.models import Weather_data
+
+
+def clear_old_weather_data():
+    yesterday_date = date.today() - datetime.timedelta(days=1)
+    if yesterday_date in Weather_data.objects.values_list('date', flat=True):
+        instance = Weather_data.objects.get(date=yesterday_date)
+        instance.delete()
 
 
 def get_current_weather_data_on_city(city: str):
     api_key = '1181b2bbbb3112b4983c8b37d478123e'
     url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=' + api_key
 
-    response = requests.get(url.format(city)).json()
+    exist = False
+    clear_old_weather_data()
 
-    dictionary_data = {'city_name': response['name'],
-                       'temp': response['main']['temp'],
-                       'temp_min': response['main']['temp_min'],
-                       'temp_max': response['main']['temp_max'],
-                       'feels_like': response['main']['feels_like'],
-                       'pressure': response['main']['pressure'],
-                       'humidity': response['main']['humidity'],
-                       'wind_speed': response['wind']['speed'],
-                       'date': str(date.today)
-                       }
-    return dictionary_data
+    filtered_data = Weather_data.objects.filter(city_name=city)
+    if city in Weather_data.objects.values_list('city_name', flat=True):
+        exist = True
+
+    if not exist:
+        print('noah')
+
+        response = requests.get(url.format(city)).json()
+
+        weather_data = {'city_name': response['name'],
+                        'temp': response['main']['temp'],
+                        'temp_min': response['main']['temp_min'],
+                        'temp_max': response['main']['temp_max'],
+                        'feels_like': response['main']['feels_like'],
+                        'pressure': response['main']['pressure'],
+                        'humidity': response['main']['humidity'],
+                        'wind_speed': response['wind']['speed'],
+                        'date': date.today()
+                        }
+
+        new_obj_weath = Weather_data(city_name=weather_data['city_name'], temp=weather_data['temp'],
+                                     temp_min=weather_data['temp_min'],
+                                     temp_max=weather_data['temp_max'], feels_like=weather_data['feels_like'],
+                                     pressure=weather_data['pressure'],
+                                     humidity=weather_data['humidity'], wind_speed=weather_data['wind_speed'],
+                                     date=date.today())
+        new_obj_weath.save()
+        return weather_data
+
+    if exist:
+        print("YEAH")
+        serializer = WeatherDataSerializer(filtered_data[0])
+
+        return serializer.data
 
 
 def get_weatherforecast_data_on_city(city: str):

@@ -19,32 +19,8 @@ import datetime
 
 class CityWeatherView(APIView):
     def get(self, request, city):
-        yesterday_date = date.today()-datetime.timedelta(days=1)
-        exist = False
-        filtered_data = Weather_data.objects.filter(city_name=city)
-        if city in Weather_data.objects.values_list('city_name', flat=True):
-            exist = True
 
-        if yesterday_date in Weather_data.objects.values_list('date', flat=True):
-            instance = Weather_data.objects.get(date=yesterday_date)
-            instance.delete()
-
-        if not exist:
-            print('noah')
-            weather_data = get_weather(city)
-            new_obj_weath = Weather_data(city_name=weather_data['city_name'], temp=weather_data['temp'],
-                                         temp_min=weather_data['temp_min'],
-                                         temp_max=weather_data['temp_max'], feels_like=weather_data['feels_like'],
-                                         pressure=weather_data['pressure'],
-                                         humidity=weather_data['humidity'], wind_speed=weather_data['wind_speed'],
-                                         date=date.today())
-            new_obj_weath.save()
-            return Response({"specific_city_weather_data": weather_data})
-        if exist:
-            print("YEAH")
-            serializer = WeatherDataSerializer(filtered_data[0])
-
-            return Response({"weather_database": serializer.data})
+        return Response({f"weather_in_{city}": get_weather(city)})
 
 
 class CityForecastView(APIView):
