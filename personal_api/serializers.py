@@ -18,8 +18,8 @@ class WeatherDataSerializer(serializers.Serializer):
 
 
 class ClothesRecommendationSerializer(serializers.Serializer):
-    user = serializers.IntegerField()
+    city_name = serializers.CharField(max_length=100, default="None")
     main_description = serializers.CharField(max_length=600)
     need_umbrella = serializers.BooleanField()
     type_of_hat = serializers.CharField(max_length=100)
-    data = serializers.DateField(default=date.today())
+    date = serializers.DateField(default=date.today)

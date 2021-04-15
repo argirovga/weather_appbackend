@@ -8,10 +8,10 @@ from personal_api.models import Weather_data
 
 
 def clear_old_weather_data():
-    yesterday_date = date.today() - datetime.timedelta(days=1)
-    if yesterday_date in Weather_data.objects.values_list('date', flat=True):
-        instance = Weather_data.objects.get(date=yesterday_date)
-        instance.delete()
+    for i in Weather_data.objects.values_list('date', flat=True):
+        if i != date.today():
+            instance = Weather_data.objects.get(date=i)
+            instance.delete()
 
 
 def get_current_weather_data_on_city(city: str):
@@ -26,8 +26,6 @@ def get_current_weather_data_on_city(city: str):
         exist = True
 
     if not exist:
-        print('noah')
-
         response = requests.get(url.format(city)).json()
 
         weather_data = {'city_name': response['name'],
@@ -51,7 +49,6 @@ def get_current_weather_data_on_city(city: str):
         return weather_data
 
     if exist:
-        print("YEAH")
         serializer = WeatherDataSerializer(filtered_data[0])
 
         return serializer.data

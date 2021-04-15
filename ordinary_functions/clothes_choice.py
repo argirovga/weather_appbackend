@@ -1,4 +1,14 @@
-def weather_choice_mech(weather):
+from ordinary_functions.get_weather_data import get_current_weather_data_on_city as get_weather
+
+from personal_api.models import Clothes_recommendation
+from personal_api.serializers import ClothesRecommendationSerializer
+
+import datetime
+from datetime import date
+
+
+def st_algorithm(city):
+    weather = get_weather(city)
     dictionary_data = {}
     if weather['temp'] >= 23:
         dictionary_data = {'main_description': '1-layer clothing ',
@@ -35,5 +45,39 @@ def weather_choice_mech(weather):
         dictionary_data['need_umbrella'] = True
 
     dictionary_data['city_name'] = weather['city_name']
+    dictionary_data['date'] = date.today()
 
     return dictionary_data
+
+
+def clear_old_clothes_data():
+    for i in Clothes_recommendation.objects.values_list('date', flat=True):
+        if i != date.today():
+            instance = Clothes_recommendation.objects.get(date=i)
+            instance.delete()
+
+
+def weather_choice_mech(city):
+    exist = False
+    clear_old_clothes_data()
+
+    filtered_data = Clothes_recommendation.objects.filter(city_name=city)
+    if city in Clothes_recommendation.objects.values_list('city_name', flat=True):
+        exist = True
+
+    if exist:
+        serializer = ClothesRecommendationSerializer(filtered_data[0])
+        return serializer.data
+
+    if not exist:
+        response = st_algorithm(city)
+
+        new_obj_weath = Clothes_recommendation(city_name=response['city_name'],
+                                               main_description=response['main_description'],
+                                               need_umbrella=response['need_umbrella'],
+                                               type_of_hat=response['type_of_hat'],
+                                               date=date.today())
+        new_obj_weath.save()
+        return response
+
+    # return res
