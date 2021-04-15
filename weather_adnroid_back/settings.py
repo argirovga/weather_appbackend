@@ -25,7 +25,7 @@ SECRET_KEY = 'hw-x)c#9)tfro(plo@qm@#$nzt86k^fm=t@0-v%na9ez-d6b_z'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['argirovga.pythonanywhere.com']
 
 
 # Application definition
