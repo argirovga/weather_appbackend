@@ -3,8 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from ordinary_functions.get_weather_data import get_current_weather_data_on_city as get_weather
 from ordinary_functions.get_weather_data import get_weatherforecast_data_on_city as get_forecast
-from ordinary_functions.clothes_choice import weather_choice_mech as get_clothes
-
+from ordinary_functions.clothes_choice import weather_choice_mech as get_clothes, bolvanka
 
 from django.contrib.auth.models import User
 
@@ -27,6 +26,13 @@ class CityClothesView(APIView):
         clothes_data = get_clothes(city)
 
         return Response({f"specific_clothes_data_in_{city}": clothes_data})
+
+
+class CityAllInOne(APIView):
+    def get(self, request, city):
+        clothes_data = bolvanka()
+        weather_data = get_weather(city)
+        return Response([{f"specific_clothes_data_in_{city}": clothes_data}, {f"specific_weather_data_in_{city}": weather_data}])
 
 
 class AddUser(APIView):

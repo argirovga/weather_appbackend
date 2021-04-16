@@ -7,6 +7,8 @@ User = get_user_model()
 
 class WeatherDataSerializer(serializers.Serializer):
     city_name = serializers.CharField(max_length=100)
+    main = serializers.CharField(max_length=300)
+    description = serializers.CharField(max_length=300)
     temp = serializers.IntegerField()
     temp_min = serializers.IntegerField()
     temp_max = serializers.IntegerField()
@@ -14,6 +16,7 @@ class WeatherDataSerializer(serializers.Serializer):
     pressure = serializers.IntegerField()
     humidity = serializers.IntegerField()
     wind_speed = serializers.IntegerField()
+    warning = serializers.CharField(max_length=500)
     date = serializers.DateField(default=date.today)
 
 

@@ -50,6 +50,11 @@ def st_algorithm(city):
     return dictionary_data
 
 
+def bolvanka():
+    dict = {'mas_clothes' : ['Boots', 'Trousers', 'T-shirt', 'Coat']}
+    return dict
+
+
 def clear_old_clothes_data():
     for i in Clothes_recommendation.objects.values_list('date', flat=True):
         if str(i) != str(date.today()):

@@ -8,6 +8,8 @@ User = get_user_model()
 
 class Weather_data(models.Model):
     city_name = models.CharField(max_length=100)
+    main = models.CharField(max_length=300, default='None')
+    description = models.CharField(max_length=300, default='None')
     temp = models.IntegerField()
     temp_min = models.IntegerField()
     temp_max = models.IntegerField()
@@ -15,6 +17,7 @@ class Weather_data(models.Model):
     pressure = models.IntegerField()
     humidity = models.IntegerField()
     wind_speed = models.IntegerField()
+    warning = models.CharField(max_length=500, default='clear')
     date = models.DateField(default=date.today)
 
     def __str__(self):
