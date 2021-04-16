@@ -52,9 +52,8 @@ def st_algorithm(city):
 
 def clear_old_clothes_data():
     for i in Clothes_recommendation.objects.values_list('date', flat=True):
-        if i != date.today():
-            instance = Clothes_recommendation.objects.get(date=i)
-            instance.delete()
+        if str(i) != str(date.today()):
+            Clothes_recommendation.objects.filter(date=i).delete()
 
 
 def weather_choice_mech(city):

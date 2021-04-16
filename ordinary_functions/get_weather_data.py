@@ -9,9 +9,8 @@ from personal_api.models import Weather_data
 
 def clear_old_weather_data():
     for i in Weather_data.objects.values_list('date', flat=True):
-        if i != date.today():
-            instance = Weather_data.objects.get(date=i)
-            instance.delete()
+        if str(i) != str(date.today()):
+            Weather_data.objects.filter(date=i).delete()
 
 
 def get_current_weather_data_on_city(city: str):
@@ -62,9 +61,6 @@ def get_weatherforecast_data_on_city(city: str):
 
     return response['list']
 
-
-if __name__ == '__main__':
-    print(get_weatherforecast_data_on_city('Moscow'))
 
 ''' example-dict {'city_name': 'Moscow', 'temp': 3.19, 'temp_min': 2.78, 'temp_max': 4, 'feels_like': -3.59,
             'pressure': 1006, 'humidity': 56, 'wind_speed': 6}
