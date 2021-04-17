@@ -50,8 +50,8 @@ def st_algorithm(city):
     return dictionary_data
 
 
-def bolvanka():
-    dict = {'mas_clothes' : ['Boots', 'Trousers', 'T-shirt', 'Coat']}
+def bolvanka(dict):
+    dict['mas_clothes'] = ['Boots', 'Trousers', 'T-shirt', 'Coat']
     return dict
 
 

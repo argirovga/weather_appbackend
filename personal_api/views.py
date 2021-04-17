@@ -30,9 +30,8 @@ class CityClothesView(APIView):
 
 class CityAllInOne(APIView):
     def get(self, request, city):
-        clothes_data = bolvanka()
-        weather_data = get_weather(city)
-        return Response([{f"specific_clothes_data_in_{city}": clothes_data}, {f"specific_weather_data_in_{city}": weather_data}])
+        data = bolvanka(get_weather(city))
+        return Response({f"specific_all_data_in_{city}": data})
 
 
 class AddUser(APIView):
