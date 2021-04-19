@@ -113,7 +113,7 @@ def get_current_weather_data_on_city(city: str):
                                      temp_max=weather_data['temp_max'], feels_like=weather_data['feels_like'],
                                      pressure=weather_data['pressure'],
                                      humidity=weather_data['humidity'], wind_speed=weather_data['wind_speed'],
-                                     date=date.today())
+                                     warning=weather_data['warning'] ,date=date.today())
         new_obj_weath.save()
         return weather_data
 
