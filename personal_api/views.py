@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 
 class CityWeatherView(APIView):
     def get(self, request, city):
-
         return Response({f"weather_in_{city}": get_weather(city)})
 
 
@@ -53,3 +52,7 @@ class AddUser(APIView):
     }
 }
 '''
+
+
+def view_available_requests(request):
+    return render(request, 'main.html')
