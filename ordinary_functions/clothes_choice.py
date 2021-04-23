@@ -3,12 +3,14 @@ from ordinary_functions.get_weather_data import get_current_weather_data_on_city
 from personal_api.models import Clothes_recommendation
 from personal_api.serializers import ClothesRecommendationSerializer
 
+from ordinary_functions.get_weather_data import get_city_on_coord
+
 import datetime
 from datetime import date
 
 
-def st_algorithm(city):
-    weather = get_weather(city)
+def st_algorithm(lat, lon):
+    weather = get_weather(lat, lon)
     dictionary_data = {}
     if weather['temp'] >= 23:
         dictionary_data = {'main_description': '1-layer clothing ',
@@ -61,9 +63,11 @@ def clear_old_clothes_data():
             Clothes_recommendation.objects.filter(date=i).delete()
 
 
-def weather_choice_mech(city):
+def weather_choice_mech(lat, lon):
     exist = False
     clear_old_clothes_data()
+
+    city = get_city_on_coord(lat, lon)
 
     filtered_data = Clothes_recommendation.objects.filter(city_name=city)
     if city in Clothes_recommendation.objects.values_list('city_name', flat=True):
@@ -74,7 +78,7 @@ def weather_choice_mech(city):
         return serializer.data
 
     if not exist:
-        response = st_algorithm(city)
+        response = st_algorithm(lat, lon)
 
         new_obj_weath = Clothes_recommendation(city_name=response['city_name'],
                                                main_description=response['main_description'],

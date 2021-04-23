@@ -1,6 +1,7 @@
 import requests
 from datetime import date
 import datetime
+from geopy import Nominatim
 
 from personal_api.serializers import WeatherDataSerializer
 
@@ -43,10 +44,10 @@ def warning_priority(mas):
     return res
 
 
-def check_forecast_for_warning(city):
+def check_forecast_for_warning(lat, lon):
     api_key = '1181b2bbbb3112b4983c8b37d478123e'
-    url_forecast = 'https://api.openweathermap.org/data/2.5/forecast?q={}&units=metric&appid=' + api_key
-    response = requests.get(url_forecast.format(city)).json()
+    url_forecast = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid=' + api_key
+    response = requests.get(url_forecast).json()
 
     warnings_mas = []
     for i in range(len(response)):
@@ -77,10 +78,22 @@ def check_includes_warning(desc):
         return 'dust'
 
 
-def get_current_weather_data_on_city(city: str):
-    api_key = '1181b2bbbb3112b4983c8b37d478123e'
-    url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=' + api_key
+def get_city_on_coord(lat, lon):
+    geolocator = Nominatim(user_agent='test/1')
+    location = geolocator.reverse(f'{lat},{lon}', language='en')
+    loc_dict = location.raw
 
+    if 'city' in loc_dict['address'].keys():
+        return loc_dict['address']['city']
+    else:
+        return loc_dict['address']['municipality']
+
+
+def get_current_weather_data_on_city(lat, lon):
+    api_key = '1181b2bbbb3112b4983c8b37d478123e'
+    url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=' + api_key
+
+    city = str(get_city_on_coord(lat, lon))
     exist = False
     clear_old_weather_data()
 
@@ -89,11 +102,11 @@ def get_current_weather_data_on_city(city: str):
         exist = True
 
     if not exist:
-        response = requests.get(url.format(city)).json()
+        response = requests.get(url).json()
 
         # ______________
 
-        weather_data = {'city_name': response['name'],
+        weather_data = {'city_name': city,
                         'main': response['weather'][0]['main'],
                         'description': response['weather'][0]['description'],
                         'temp': int(response['main']['temp']),
@@ -103,7 +116,7 @@ def get_current_weather_data_on_city(city: str):
                         'pressure': response['main']['pressure'],
                         'humidity': response['main']['humidity'],
                         'wind_speed': response['wind']['speed'],
-                        'warning': check_forecast_for_warning(city),
+                        'warning': check_forecast_for_warning(lat, lon),
                         'date': date.today()
                         }
 
@@ -113,7 +126,7 @@ def get_current_weather_data_on_city(city: str):
                                      temp_max=weather_data['temp_max'], feels_like=weather_data['feels_like'],
                                      pressure=weather_data['pressure'],
                                      humidity=weather_data['humidity'], wind_speed=weather_data['wind_speed'],
-                                     warning=weather_data['warning'] ,date=date.today())
+                                     warning=weather_data['warning'], date=date.today())
         new_obj_weath.save()
         return weather_data
 
@@ -123,19 +136,15 @@ def get_current_weather_data_on_city(city: str):
         return serializer.data
 
 
-def get_weatherforecast_data_on_city(city: str):
+def get_weatherforecast_data_on_city(lat, lon):
     api_key = '1181b2bbbb3112b4983c8b37d478123e'
-    url = 'https://api.openweathermap.org/data/2.5/forecast?q={}&units=metric&appid=' + api_key
+    url = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=' + api_key
 
-    response = requests.get(url.format(city)).json()
+    response = requests.get(url).json()
 
     return response['list']
 
 
-if __name__ == '__main__':
-    api_key = '1181b2bbbb3112b4983c8b37d478123e'
-    url_forecast = 'https://api.openweathermap.org/data/2.5/forecast?q={}&units=metric&appid=' + api_key
-    print(requests.get(url_forecast.format('Moscow')).json())
 ''' example-dict {'city_name': 'Moscow', 'temp': 3.19, 'temp_min': 2.78, 'temp_max': 4, 'feels_like': -3.59,
             'pressure': 1006, 'humidity': 56, 'wind_speed': 6}
 
