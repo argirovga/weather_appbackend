@@ -91,7 +91,7 @@ def get_city_on_coord(lat, lon):
 
 def get_current_weather_data_on_city(lat, lon):
     api_key = '1181b2bbbb3112b4983c8b37d478123e'
-    url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=' + api_key
+    url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid=' + api_key
 
     city = str(get_city_on_coord(lat, lon))
     exist = False
@@ -138,7 +138,7 @@ def get_current_weather_data_on_city(lat, lon):
 
 def get_weatherforecast_data_on_city(lat, lon):
     api_key = '1181b2bbbb3112b4983c8b37d478123e'
-    url = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=' + api_key
+    url = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid=' + api_key
 
     response = requests.get(url).json()
 
