@@ -8,10 +8,18 @@ from personal_api.serializers import WeatherDataSerializer
 from personal_api.models import Weather_data
 
 
-def clear_old_weather_data():
+def clear_old_weather_on_data():
     for i in Weather_data.objects.values_list('date', flat=True):
         if str(i) != str(date.today()):
             Weather_data.objects.filter(date=i).delete()
+
+
+def clear_old_weather_on_time():
+    now = datetime.datetime.now().time()
+
+    for i in Weather_data.objects.values_list('time', flat=True):
+        if i < now.replace(hour=now.hour - 1):
+            Weather_data.objects.filter(time=i).delete()
 
 
 def warning_priority(mas):
@@ -41,6 +49,9 @@ def warning_priority(mas):
         if i == 'clouds':
             res = i
             break
+        if i == 'clear':
+            res = i
+            break
     return res
 
 
@@ -60,6 +71,8 @@ def check_forecast_for_warning(lat, lon):
 
 
 def check_includes_warning(desc):
+    if "clear" in str(desc):
+        return 'clear'
     if "clouds" in str(desc):
         return 'clouds'
     if "snow" in str(desc):
@@ -95,7 +108,8 @@ def get_current_weather_data_on_city(lat, lon):
 
     city = str(get_city_on_coord(lat, lon))
     exist = False
-    clear_old_weather_data()
+    clear_old_weather_on_data()
+    clear_old_weather_on_time()
 
     filtered_data = Weather_data.objects.filter(city_name=city)
     if city in Weather_data.objects.values_list('city_name', flat=True):
@@ -117,7 +131,8 @@ def get_current_weather_data_on_city(lat, lon):
                         'humidity': response['main']['humidity'],
                         'wind_speed': response['wind']['speed'],
                         'warning': check_forecast_for_warning(lat, lon),
-                        'date': date.today()
+                        'date': date.today(),
+                        'time': datetime.datetime.now().time()
                         }
 
         new_obj_weath = Weather_data(city_name=weather_data['city_name'], main=weather_data['main'],
@@ -126,7 +141,8 @@ def get_current_weather_data_on_city(lat, lon):
                                      temp_max=weather_data['temp_max'], feels_like=weather_data['feels_like'],
                                      pressure=weather_data['pressure'],
                                      humidity=weather_data['humidity'], wind_speed=weather_data['wind_speed'],
-                                     warning=weather_data['warning'], date=date.today())
+                                     warning=weather_data['warning'], date=date.today(),
+                                     time=datetime.datetime.now().time())
         new_obj_weath.save()
         return weather_data
 

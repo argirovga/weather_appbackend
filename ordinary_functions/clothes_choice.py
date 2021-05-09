@@ -1,91 +1,38 @@
 from ordinary_functions.get_weather_data import get_current_weather_data_on_city as get_weather
 
-from personal_api.models import Clothes_recommendation
-from personal_api.serializers import ClothesRecommendationSerializer
-
 from ordinary_functions.get_weather_data import get_city_on_coord
+from ordinary_functions.matrix import creating_clothes_matrix, creating_weather_matrix
 
+import numpy as np
 import datetime
 from datetime import date
 
 
-def st_algorithm(lat, lon):
-    weather = get_weather(lat, lon)
-    dictionary_data = {}
-    if weather['temp'] >= 23:
-        dictionary_data = {'main_description': '1-layer clothing ',
-                           'need_umbrella': False,
-                           'type_of_hat': 'cap',
-                           }
-    if 23 > weather['temp'] >= 18:
-        dictionary_data = {'main_description': '2-layer clothing ',
-                           'need_umbrella': False,
-                           'type_of_hat': None,
-                           }
-    if 18 > weather['temp'] >= 14:
-        dictionary_data = {'main_description': '3-layer clothing ',
-                           'need_umbrella': False,
-                           'type_of_hat': 'warm hat',
-                           }
-    if 14 > weather['temp'] >= -2:
-        dictionary_data = {'main_description': '4-layer clothing ',
-                           'need_umbrella': False,
-                           'type_of_hat': 'warm hat',
-                           }
-    if -2 > weather['temp'] >= -8:
-        dictionary_data = {'main_description': '4-layer clothing ',
-                           'need_umbrella': False,
-                           'type_of_hat': 'extra-warm hat',
-                           }
-    if -8 > weather['temp'] >= -15:
-        dictionary_data = {'main_description': '5-layer clothing ',
-                           'need_umbrella': False,
-                           'type_of_hat': 'extra-warm hat',
-                           }
+def algorithm(lat, lon):
+    m_weather = creating_weather_matrix()
+    m_clothes = creating_clothes_matrix()
 
-    if weather['humidity'] >= 70 or weather['temp'] >= 30:
-        dictionary_data['need_umbrella'] = True
+    real_weather = get_weather(lat, lon)
+    wind_check = real_weather['wind_speed']
+    humidity_check = real_weather['humidity']
+    temp_check = real_weather['temp']
+    f_coord = int(0)
+    s_coord = int(0)
+    th_coord = int(0)
 
-    dictionary_data['city_name'] = weather['city_name']
-    dictionary_data['date'] = date.today()
+    for i in range(len(m_weather) - 1):
+        if m_weather[i][0][0] <= wind_check < m_weather[i + 1][0][0]:
+            f_coord = i
+            break
 
-    return dictionary_data
+    for i in range(len(m_weather[0]) - 1):
+        if m_weather[0][i][0] <= humidity_check < m_weather[0][i + 1][0]:
+            s_coord = i
+            break
 
+    for i in range(len(m_weather[0][0]) - 1):
+        if m_weather[0][0][i] <= temp_check < m_weather[0][0][i + 1]:
+            th_coord = i
 
-def bolvanka(dict):
-    dict['mas_clothes'] = ['Boots', 'Trousers', 'T-shirt', 'Coat']
-    return dict
+    return m_clothes[f_coord][s_coord][th_coord]
 
-
-def clear_old_clothes_data():
-    for i in Clothes_recommendation.objects.values_list('date', flat=True):
-        if str(i) != str(date.today()):
-            Clothes_recommendation.objects.filter(date=i).delete()
-
-
-def weather_choice_mech(lat, lon):
-    exist = False
-    clear_old_clothes_data()
-
-    city = get_city_on_coord(lat, lon)
-
-    filtered_data = Clothes_recommendation.objects.filter(city_name=city)
-    if city in Clothes_recommendation.objects.values_list('city_name', flat=True):
-        exist = True
-
-    if exist:
-        serializer = ClothesRecommendationSerializer(filtered_data[0])
-        return serializer.data
-
-    if not exist:
-        response = st_algorithm(lat, lon)
-
-        new_obj_weath = Clothes_recommendation(city_name=response['city_name'],
-                                               main_description=response['main_description'],
-                                               need_umbrella=response['need_umbrella'],
-                                               type_of_hat=response['type_of_hat'],
-                                               date=date.today())
-        new_obj_weath.save()
-        return response
-
-    # return res
