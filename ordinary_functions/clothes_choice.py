@@ -30,8 +30,8 @@ def algorithm(lat, lon):
             s_coord = i
             break
 
-    for i in range(len(m_weather[0][0]) - 1):
-        if m_weather[0][0][i] <= temp_check < m_weather[0][0][i + 1]:
+    for i in range(len(m_weather[0][0])):
+        if temp_check >= m_weather[0][0][i]:
             th_coord = i
 
     return m_clothes[f_coord][s_coord][th_coord]
