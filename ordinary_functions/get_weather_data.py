@@ -24,50 +24,36 @@ def clear_old_weather_on_time():
 
 def warning_priority(mas):
     res = str()
-    for i in mas:
-        if i == 'tornado':
-            res = i
+    for i in range(2):
+        if 'tornado' in mas:
+            res = 'tornado'
             break
-        if i == 'squalls':
-            res = i
+        if 'squalls' in mas:
+            res = 'squalls'
             break
-        if i == 'thunderstorm':
-            res = i
+        if 'thunderstorm' in mas:
+            res = 'thunderstorm'
             break
-        if i == 'dust':
-            res = i
+        if 'dust' in mas:
+            res = 'dust'
             break
-        if i == 'rain' or i == 'snow':
-            if i == 'rain':
-                return 'rain'
-            if i == 'snow':
-                return 'snow'
+        if 'rain' in mas:
+            res = 'rain'
             break
-        if i == 'fog':
-            res = i
+        if 'snow' in mas:
+            res = 'snow'
             break
-        if i == 'clouds':
-            res = i
+        if 'fog' in mas:
+            res = 'fog'
             break
-        if i == 'clear':
-            res = i
+        if 'clouds' in mas:
+            res = 'clouds'
             break
+        if 'clear' in mas:
+            res = 'clear'
+            break
+
     return res
-
-
-def check_forecast_for_warning(lat, lon):
-    api_key = '1181b2bbbb3112b4983c8b37d478123e'
-    url_forecast = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid=' + api_key
-    response = requests.get(url_forecast).json()
-
-    warnings_mas = []
-    for i in range(len(response)):
-        warnings_mas.append(check_includes_warning(response['list'][i]['weather'][0]['description']))
-
-    if len(warnings_mas) > 0:
-        return warning_priority(warnings_mas)
-    if len(warnings_mas) == 0:
-        return "clear"
 
 
 def check_includes_warning(desc):
@@ -89,6 +75,19 @@ def check_includes_warning(desc):
         return 'fog'
     if str(desc) == "sand" or str(desc) == "dust" or str(desc) == "ash":
         return 'dust'
+
+
+def check_forecast_for_warning(lat, lon):
+    api_key = '1181b2bbbb3112b4983c8b37d478123e'
+    url_forecast = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid=' + api_key
+    response = requests.get(url_forecast).json()
+
+    warnings_mas = []
+    for i in range(5):
+        warnings_mas.append(check_includes_warning(response['list'][i]['weather'][0]['description']))
+
+    if len(warnings_mas) > 0:
+        return warning_priority(warnings_mas)
 
 
 def get_city_on_coord(lat, lon):

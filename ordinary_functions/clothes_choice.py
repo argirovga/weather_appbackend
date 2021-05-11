@@ -34,5 +34,10 @@ def algorithm(lat, lon):
         if temp_check >= m_weather[0][0][i]:
             th_coord = i
 
-    return m_clothes[f_coord][s_coord][th_coord]
+    res = m_clothes[f_coord][s_coord][th_coord]
+
+    if real_weather['warning'] == "rain":
+        res.append('Umbrella')
+
+    return res
 
