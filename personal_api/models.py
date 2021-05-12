@@ -27,11 +27,12 @@ class Weather_data(models.Model):
 
 
 class User_preferences(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    temp_pref = models.IntegerField()
-    wind_pref = models.IntegerField()
-    fall_out_pref = models.IntegerField()
+    user_id = models.CharField(max_length=300, default='0')
+    temp_pref = models.IntegerField(default=0)
+    wind_pref = models.IntegerField(default=0)
+    humidity_pref = models.IntegerField(default=0)
+    name = models.CharField(max_length=300, default=None)
 
     def __str__(self):
-        return self.user
+        return self.name
 

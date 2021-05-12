@@ -5,6 +5,9 @@ from ordinary_functions.get_weather_data import get_current_weather_data_on_city
 from ordinary_functions.get_weather_data import get_weatherforecast_data_on_city as get_forecast
 from ordinary_functions.get_weather_data import get_city_on_coord
 from ordinary_functions.clothes_choice import algorithm
+from ordinary_functions.registration_system import generate_token, check_access
+
+from personal_api.models import User_preferences
 
 from django.contrib.auth.models import User
 
@@ -38,25 +41,25 @@ class CityAllInOne(APIView):
         return Response({f"specific_all_data_in_city": data})
 
 
-class AddUser(APIView):
-    def post(self, request):
-        user = request.data.get('User_info')
-
-        # Create an article from the above data
-        new_user = User.objects.create_user(username=user['username'], email=user['email'], password=user['password'])
-        new_user.save()
+class AddUserFirstTime(APIView):
+    def get(self, request, name, temp_pref):
+        user_id = generate_token()
+        user = User_preferences(user_id=user_id, temp_pref=temp_pref, name=name)
+        user.save()
+        print(user_id)
         return Response("success: User created successfully")
 
 
-'''
-{
-    "User_info": {
-        "username": "vasya_228"
-        "email": "vasya_228@gmail.com"
-        "password": "228"
-    }
-}
-'''
+class ChangeUserPref(APIView):
+    def get(self, request, user_id, name, new_temp_pref):
+        check = check_access(user_id, name)
+        if check:
+            templ = User_preferences.objects.get(user_id=user_id, name=name)
+            templ.temp_pref = new_temp_pref
+            templ.save()
+            return Response("success: User preference changed successfully")
+        if not check:
+            return Response("declined")
 
 
 def view_available_requests(request):

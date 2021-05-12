@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-sm-6 center-block">
                     <div class="card-header">
-                        get requests
+                        Weather and clothes mechanisms
                     </div>
                     <div class="card border-warning mb-3 text-center" style="width: 22rem;">
                         <div class="card-body">
@@ -51,13 +51,19 @@
                 </div>
                 <div class="col-sm-6 center-block">
                     <div class="card-header">
-                        post requests
+                        Administration requests
                     </div>
                     <div class="card border-info mb-3 text-center" style="width: 22rem;">
                         <div class="card-body">
                             <h5 class="card-title">Зарегестрировать пользователя</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">api/create_user</h6>
-                            <a href="api/create_user/" class="btn btn-info">Try</a>
+                            <h6 class="card-subtitle mb-2 text-muted">api/create_user/name="name"&temp_pref="temp_pref"</h6>
+                            <a href="api/create_user/name=Vasya228&temp_pref=1" class="btn btn-info">Попробуй создать васю228</a>
+                        </div>
+                    </div>
+                    <div class="card border-info mb-3 text-center" style="width: 22rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Изменить предпочтения пользователя</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">api/create_user/name="name"&user_id="user_id"&new_temp_pref="new_temp_pref"</h6>
                         </div>
                     </div>
                 </div>
