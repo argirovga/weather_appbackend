@@ -46,8 +46,7 @@ class AddUserFirstTime(APIView):
         user_id = generate_token()
         user = User_preferences(user_id=user_id, temp_pref=temp_pref, name=name)
         user.save()
-        print(user_id)
-        return Response("success: User created successfully")
+        return Response({"success: uder_id" : user_id})
 
 
 class ChangeUserPref(APIView):
