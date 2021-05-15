@@ -37,13 +37,15 @@ def algorithm(lat, lon, user_id):
             th_coord = i
 
     templ = User_preferences.objects.get(user_id=user_id)
-    if th_coord + templ.temp_pref > 10:
+
+    th_coord += templ.temp_pref
+
+    if th_coord >= 10:
         th_coord = 9
-        res = m_clothes[f_coord][s_coord][th_coord]
+    res = m_clothes[f_coord][s_coord][th_coord]
 
     if real_weather['warning'] == "rain":
         res.append('Umbrella')
-
 
     return res
 
