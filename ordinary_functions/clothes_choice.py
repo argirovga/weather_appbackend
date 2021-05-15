@@ -37,8 +37,8 @@ def algorithm(lat, lon, user_id):
             th_coord = i
 
     templ = User_preferences.objects.get(user_id=user_id)
-
-    th_coord += templ.temp_pref
+    if templ.temp_pref != -100:
+        th_coord += templ.temp_pref
 
     if th_coord >= 10:
         th_coord = 9
