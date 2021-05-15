@@ -14,30 +14,28 @@ from django.contrib.auth.models import User
 
 class CityWeatherView(APIView):
     def get(self, request, lat, lon):
-        city = get_city_on_coord(float(lat), float(lon))
+
         return Response({f"weather_in_city": get_weather(float(lat), float(lon))})
 
 
 class CityForecastView(APIView):
     def get(self, request, lat, lon):
-        city = get_city_on_coord(float(lat), float(lon))
         forecast_date = get_forecast(lat, lon)
 
         return Response({f"specific_forecast_data_in_city": forecast_date})
 
 
 class CityClothesView(APIView):
-    def get(self, request, lat, lon):
-        city = get_city_on_coord(float(lat), float(lon))
-        clothes_data = algorithm(lat, lon)
+    def get(self, request, lat, lon, user_id):
+        clothes_data = algorithm(lat, lon, user_id)
+
         return Response({f"specific_clothes_data_in_city": clothes_data})
 
 
 class CityAllInOne(APIView):
-    def get(self, request, lat, lon):
+    def get(self, request, lat, lon, user_id):
         data = get_weather(lat, lon)
-        data['mas_clothes'] = algorithm(lat, lon)
-        city = get_city_on_coord(float(lat), float(lon))
+        data['mas_clothes'] = algorithm(lat, lon, user_id)
         return Response({f"specific_all_data_in_city": data})
 
 

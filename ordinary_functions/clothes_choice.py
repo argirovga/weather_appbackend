@@ -7,8 +7,10 @@ import numpy as np
 import datetime
 from datetime import date
 
+from personal_api.models import User_preferences
 
-def algorithm(lat, lon):
+
+def algorithm(lat, lon, user_id):
     m_weather = creating_weather_matrix()
     m_clothes = creating_clothes_matrix()
 
@@ -34,10 +36,14 @@ def algorithm(lat, lon):
         if temp_check >= m_weather[0][0][i]:
             th_coord = i
 
-    res = m_clothes[f_coord][s_coord][th_coord]
+    templ = User_preferences.objects.get(user_id=user_id)
+    if th_coord + templ.temp_pref > 10:
+        th_coord = 9
+        res = m_clothes[f_coord][s_coord][th_coord]
 
     if real_weather['warning'] == "rain":
         res.append('Umbrella')
+
 
     return res
 

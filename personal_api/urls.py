@@ -10,10 +10,10 @@ from .views import ChangeUserPref
 app_name = "all_weather"
 
 urlpatterns = [
-    path('all_in_one/lat=<lat>&lon=<lon>', CityAllInOne.as_view()),
+    path('all_in_one/lat=<lat>&lon=<lon>&user_id=<user_id>', CityAllInOne.as_view()),
     path('weather/lat=<lat>&lon=<lon>', CityWeatherView.as_view()),
     path('weather/forecast/lat=<lat>&lon=<lon>', CityForecastView.as_view()),
-    path('clothes/lat=<lat>&lon=<lon>', CityClothesView.as_view()),
+    path('clothes/lat=<lat>&lon=<lon>&user_id=<user_id>', CityClothesView.as_view()),
     path('create_user/name=<name>&temp_pref=<temp_pref>', AddUserFirstTime.as_view()),
     path('create_user/name=<name>&user_id=<user_id>&new_temp_pref=<new_temp_pref>', ChangeUserPref.as_view()),
 ]

@@ -195,5 +195,5 @@ def adding_clothes_variants(clothes_matrix):
 
 
 if __name__ == '__main__':
-    print(creating_clothes_matrix())
+    print(creating_clothes_matrix()[0][0])
 
