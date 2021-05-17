@@ -83,7 +83,7 @@ def check_forecast_for_warning(lat, lon):
     response = requests.get(url_forecast).json()
 
     warnings_mas = []
-    for i in range(5):
+    for i in range(3):
         warnings_mas.append(check_includes_warning(response['list'][i]['weather'][0]['description']))
 
     if len(warnings_mas) > 0:
