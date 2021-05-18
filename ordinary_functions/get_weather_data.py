@@ -18,7 +18,10 @@ def clear_old_weather_on_time():
     now = datetime.datetime.now().time()
 
     for i in Weather_data.objects.values_list('time', flat=True):
-        if i < now.replace(hour=now.hour - 1):
+        new_minute = now.minute - 30
+        if new_minute < 0:
+            new_minute = 0
+        if i < now.replace(minute=new_minute):
             Weather_data.objects.filter(time=i).delete()
 
 
