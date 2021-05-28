@@ -22,6 +22,14 @@ temp:
 
 
 def temp_to_weather_matr(weather_matrix, temp, wind):
+    """
+    Добавление значений температуры в матрицу одежды
+
+    :param weather_matrix: матрица погоды
+    :param temp: длина оси "температуры"
+    :param wind: длина оси "ветра"
+    :return: отредактированная матрица погоды
+    """
     start_temp = int(-20)
     for j in range(wind):
         for i in range(1, temp):
@@ -33,6 +41,14 @@ def temp_to_weather_matr(weather_matrix, temp, wind):
 
 
 def hum_to_weather_matr(weather_matrix, wind, hum):
+    """
+    Добавление значений влажности в матрицу одежды
+
+    :param weather_matrix: матрица погоды
+    :param wind: длина оси "ветра"
+    :param hum: длина оси "влажности"
+    :return: отредактированная матрица погоды
+    """
     for j in range(wind):
         for i in range(1, hum):
             weather_matrix[j][i][0] = i * 20
@@ -41,6 +57,13 @@ def hum_to_weather_matr(weather_matrix, wind, hum):
 
 
 def wind_to_weather_matr(weather_matrix, wind):
+    """
+    Добавление значений ветра в матрицу одежды
+
+    :param weather_matrix: матрица погоды
+    :param wind: длина оси "ветра"
+    :return: отредактированная матрица погоды
+    """
     for i in range(1, wind):
         weather_matrix[i][0][0] = i * 5
 
@@ -48,6 +71,11 @@ def wind_to_weather_matr(weather_matrix, wind):
 
 
 def creating_weather_matrix():
+    """
+    Создание пустой матрицы погоды
+
+    :return: пустая матрица погоды
+    """
     weather_matrix = np.zeros(420, dtype=int)
     temp = int(10)
     hum = int(6)
@@ -61,6 +89,11 @@ def creating_weather_matrix():
 
 
 def creating_clothes_matrix():
+    """
+    Создание матрицы одежды
+
+    :return: пустая матрица одежды
+    """
     Ox = int(10)
     Oy = int(6)
     Oz = int(7)
@@ -71,6 +104,12 @@ def creating_clothes_matrix():
 
 
 def adding_clothes_variants(clothes_matrix):
+    """
+    Добавление списков одежды в матрицу
+
+    :param clothes_matrix: матрица одежды
+    :return: готовая матрица одежды
+    """
     # 0<=wind<5
     for i in range(0, 1):
         # temp>=20; 0<=hum<60; (["Sandals", "T-shirt", "Shorts", "Panama", "Sunglasses"])
@@ -195,5 +234,4 @@ def adding_clothes_variants(clothes_matrix):
 
 
 if __name__ == '__main__':
-    print(creating_clothes_matrix()[0][0])
-
+    print(creating_weather_matrix())

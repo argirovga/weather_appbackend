@@ -11,6 +11,14 @@ from personal_api.models import User_preferences
 
 
 def algorithm(lat, lon, user_id):
+    """
+    Сопостовление обработанных данных с сервиса OpenWeatherMap с матрицей погоды и дальнейшее подстановка в матрицу одежды
+
+    :param lat: широта
+    :param lon: долгота
+    :param user_id: уникальный токен пользователя
+    :return: список предложенной одежды
+    """
     m_weather = creating_weather_matrix()
     m_clothes = creating_clothes_matrix()
 
@@ -37,15 +45,29 @@ def algorithm(lat, lon, user_id):
             th_coord = i
 
     templ = User_preferences.objects.get(user_id=user_id)
-    if templ.temp_pref != -100:
+
+    if templ.last_temp >= 20 or templ.last_temp <= -15:
+        if templ.temp_pref != -100:
+            th_coord += templ.temp_pref
+            print("tempreture")
+
+    if templ.last_temp == -100 and templ.last_hum == -100:
         th_coord += templ.temp_pref
+
+    if 20 > templ.last_temp > -20:
+        if templ.temp_pref != -100:
+            s_coord += templ.temp_pref
+            print("humidity")
 
     if th_coord >= 10:
         th_coord = 9
+
+    if s_coord >= 6:
+        s_coord = 5
+
     res = m_clothes[f_coord][s_coord][th_coord]
 
     if real_weather['warning'] == "rain":
         res.append('Umbrella')
 
     return res
-

@@ -8,6 +8,9 @@ User = get_user_model()
 
 
 class WeatherDataSerializer(serializers.Serializer):
+    """
+    Отображение данных погоды для наглядного представления
+    """
     city_name = serializers.CharField(max_length=100)
     main = serializers.CharField(max_length=300)
     description = serializers.CharField(max_length=300)

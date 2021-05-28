@@ -9,12 +9,18 @@ from personal_api.models import Weather_data
 
 
 def clear_old_weather_on_data():
+    """
+    Очищение базы данных от устаревших данных по дате
+    """
     for i in Weather_data.objects.values_list('date', flat=True):
         if str(i) != str(date.today()):
             Weather_data.objects.filter(date=i).delete()
 
 
 def clear_old_weather_on_time():
+    """
+    Очищение базы данных от устаревших данных по времени
+    """
     now = datetime.datetime.now().time()
 
     for i in Weather_data.objects.values_list('time', flat=True):
@@ -26,6 +32,12 @@ def clear_old_weather_on_time():
 
 
 def warning_priority(mas):
+    """
+    Проверка наличия предупреждений в прогнозе погоды на 9 часов вперед
+
+    :param mas: массив обработанных предупреждений
+    :return: самое важное предупреждение на 9 часов вперед
+    """
     res = str()
     for i in range(2):
         if 'tornado' in mas:
@@ -60,6 +72,12 @@ def warning_priority(mas):
 
 
 def check_includes_warning(desc):
+    """
+    Обработка предупреждения
+
+    :param desc: описание погоды
+    :return: обработанное предупреждение
+    """
     if "clear" in str(desc):
         return 'clear'
     if "clouds" in str(desc):
@@ -81,6 +99,13 @@ def check_includes_warning(desc):
 
 
 def check_forecast_for_warning(lat, lon):
+    """
+    Проверка наличия предупреждений в прогнозе погоды на 9 часов вперед
+
+    :param lat: широта
+    :param lon: долгота
+    :return: самое важное предупреждение на 9 часов вперед
+    """
     api_key = '1181b2bbbb3112b4983c8b37d478123e'
     url_forecast = f'https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&units=metric&appid=' + api_key
     response = requests.get(url_forecast).json()
@@ -119,8 +144,6 @@ def get_current_weather_data_on_city(lat, lon):
 
     if not exist:
         response = requests.get(url).json()
-
-        # ______________
 
         weather_data = {'city_name': city,
                         'main': response['weather'][0]['main'],
