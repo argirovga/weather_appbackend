@@ -67,7 +67,7 @@ def algorithm(lat, lon, user_id):
 
     res = m_clothes[f_coord][s_coord][th_coord]
 
-    if real_weather['warning'] == "rain" or 'rain' in real_weather['description']:
+    if real_weather['warning'] == "rain" or 'Rain' in real_weather['main']:
         res.append('Umbrella')
 
     return res
